@@ -52,6 +52,8 @@ public:
 
 	const Surface& GetSurface();
 
+	static std::string ToSrtring(int x);
+
 private:
 	bool SupportedChars(const std::wstring& txt) const;
 	bool SupportedChars(const std::string& txt) const;

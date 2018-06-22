@@ -500,20 +500,70 @@ void Text::DeleteData()
 
 int Text::GetWidth() const
 {
-	assert(srfExist);
-	return width;
+#ifndef NDEBUG
+	if (srfExist) {
+		return width;
+	}
+	throw std::exception("TEXT ERR\nSome BULLSHIT is trying to get WIDTH from deleted or not initialized Text object.");
+#else
+	if (srfExist) {
+		return width;
+	}
+	return 0;
+#endif
 }
 
 int Text::GetHeight() const
 {
-	assert(srfExist);
-	return height;
+
+#ifndef NDEBUG
+	if (srfExist) {
+		return height;
+	}
+	throw std::exception("TEXT ERR\nSome BULLSHIT is trying to get HEIGHT from deleted or not initialized Text object.");
+#else
+	if (srfExist) {
+		return height;
+	}
+	return 0;
+#endif
 }
 
 const Surface& Text::GetSurface()
 {
-	assert(srfExist);
+	//assert(srfExist);
+#ifndef NDEBUG
+	if (!srfExist) {
+		throw std::exception("TEXT ERR\nSome BULLSHIT is trying to get Surface& from deleted or not initialized Text object.");
+	}
+#else
+	// not 100% sure so far, whether something here ????	????	????	????	????	????	????	????
+#endif
 	return *srf;
+}
+
+std::string  Text::ToSrtring(int x)
+{
+
+	if (x == 0) { 
+		return "0";
+	}
+		
+	std::string str;
+
+	bool Negative = (x < 0);
+	x = abs(x);
+
+	do {
+		str = char(char(x%10)+'0') + str;
+		x /= 10;
+	} while (x>0);
+
+	if (Negative) {
+		str = '-' + str;
+	}
+
+	return str;
 }
 
 bool Text::SupportedChars(const std::wstring & txt) const

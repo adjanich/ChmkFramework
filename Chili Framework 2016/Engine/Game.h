@@ -32,6 +32,9 @@ private:
 
 	Font fnt = Font(L"testfont.bmp");
 
+	int x = 2;
+	int y = 3;
+
 
 
 	
