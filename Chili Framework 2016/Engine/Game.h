@@ -34,12 +34,28 @@ private:
 	double initX = 400.0;
 	double initY = 400.0;
 	double initDir = PI;
-	double dirStep = 0.1*PI;
+	double dirStep1 = 0.1*PI;
+	double dirStep2 = -0.1*PI;
 	double initStep = 100.0;
 	double stepCoef = 0.7;
 	int ClrShift = 0;
 
+	bool stepCoefUp = true;
 
+	double x1;
+	double x2;
+	double y1;
+	double y2;
+	double vx = 1.0;
+	double vy = 1.0;
+	const double a = 0.05;
+	const double aROT = 0.01;
+	const double vMax = 5.0;
+	const double friction = 0.99;
 
-	
+	const double g = 0.01;
+
+	const double margin = 10.0;
+	const double marginROT = 50.0;
+
 };
