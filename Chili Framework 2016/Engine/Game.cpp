@@ -11,7 +11,8 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
 	rng(std::random_device()())
 {
-
+	std::uniform_real_distribution<double> Dist(0, 2 * PI);
+	dirStep2 = Dist(rng);
 }
 
 void Game::Go()
@@ -110,6 +111,22 @@ void Game::ComposeFrame()
 	initX += vx;
 	initY += vy;
 
+#ifndef NDEBUG
+	DrawRect(x1, x2, y1, y2);
+	Text t_x1 = Text(Text::ToSrtring(int(x1)), fnt);
+	srf = t_x1.GetSurface();
+	gfx.DrawSprite(0, 0, srf);
+	t_x1 = Text(Text::ToSrtring(int(x2)), fnt);
+	srf = t_x1.GetSurface();
+	gfx.DrawSprite(0, 20, srf);
+	t_x1 = Text(Text::ToSrtring(int(y1)), fnt);
+	srf = t_x1.GetSurface();
+	gfx.DrawSprite(0, 40, srf);
+	t_x1 = Text(Text::ToSrtring(int(y2)), fnt);
+	srf = t_x1.GetSurface();
+	gfx.DrawSprite(0, 60, srf);
+#endif
+
 }
 
 int Game::pwr(int x, int y) {
@@ -125,4 +142,22 @@ int Game::pwr(int y) {
 		r *= 2;
 	}
 	return r;
+}
+void Game::DrawRect(int x1, int x2, int y1, int y2) {
+	for (int i = x1; i <= x2; i++) {
+		if (i >= 0 && i < gfx.ScreenWidth && y1 >= 0 && y1 < gfx.ScreenHeight) {
+			gfx.PutPixel(i, y1, 255, 255, 255);
+		}
+		if (i >= 0 && i < gfx.ScreenWidth && y2 >= 0 && y2 < gfx.ScreenHeight) {
+			gfx.PutPixel(i, y2, 255, 255, 255);
+		}
+	}
+	for (int j = y1; j <= y2; j++) {
+		if (x1 >= 0 && x1 < gfx.ScreenWidth && j >= 0 && j < gfx.ScreenHeight) {
+			gfx.PutPixel(x1, j, 255, 255, 255);
+		}
+		if (x2 >= 0 && x2 < gfx.ScreenWidth && j >= 0 && j < gfx.ScreenHeight) {
+			gfx.PutPixel(x2, j, 255, 255, 255);
+		}
+	}
 }

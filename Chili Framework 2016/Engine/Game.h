@@ -6,6 +6,10 @@
 #include "Graphics.h"
 #include <random>
 
+#ifndef NDEBUG
+#include "TextDrawing.h"
+#endif
+
 #define PI 3.141592653589793238462643383279502884197
 
 
@@ -23,6 +27,13 @@ private:
 
 	int pwr(int x, int y);
 	int pwr(int y);
+
+	void DrawRect(int x1, int x2, int y1, int y2);
+
+#ifndef NDEBUG
+	Font fnt = Font(L"testfont.bmp");
+	Surface srf = Surface(1, 1);
+#endif
 
 private:
 	MainWindow& wnd;
