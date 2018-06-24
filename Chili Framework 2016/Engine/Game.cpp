@@ -32,7 +32,19 @@ void Game::ComposeFrame()
 {
 
 
+	leftStepCoefCurP += 0.01;
+	if (leftStepCoefCurP > leftStepCoefP1 + leftStepCoefP2) { leftStepCoefCurP = 0; }
+	if (leftStepCoefCurP < leftStepCoefP1) {
+		leftStepCoef = 0.5*(leftStepCoefMax + leftStepCoefMin) + 0.5*(leftStepCoefMax - leftStepCoefMin)*cos(leftStepCoefCurP);
+	}
+	else { 
+		leftStepCoef = leftStepCoefMax; 
+	}
+
+
+
 	int imax = pwr(lvl);
+
 	for (int i = 0; i < imax; i++) {
 		int temp = i;
 		double x = initX;
@@ -51,13 +63,18 @@ void Game::ComposeFrame()
 			y += (step * cos(dir));
 
 			step *= stepCoef;
+			if (digitVal) { step *= leftStepCoef; }
+
 		}
-		if (x >= 0 && x < gfx.ScreenWidth && y >= 0 && y < gfx.ScreenHeight) { gfx.PutPixel(x, y, Color::Hue(i+ClrShift,imax)); }
+		if (x + 1 >= 0 && x + 1 < gfx.ScreenWidth && y >= 0 && y < gfx.ScreenHeight) { gfx.PutPixel(x + 1, y, Color::Hue(i + ClrShift + imax / 6, imax, 0.3)); }
+		if (x - 1 >= 0 && x - 1 < gfx.ScreenWidth && y >= 0 && y < gfx.ScreenHeight) { gfx.PutPixel(x - 1, y, Color::Hue(i + ClrShift + imax / 6, imax, 0.3)); }
+		if (x >= 0 && x < gfx.ScreenWidth && y + 1 >= 0 && y + 1 < gfx.ScreenHeight) { gfx.PutPixel(x, y + 1, Color::Hue(i + ClrShift + imax / 6, imax, 0.3)); }
+		if (x >= 0 && x < gfx.ScreenWidth && y - 1 >= 0 && y - 1 < gfx.ScreenHeight) { gfx.PutPixel(x, y - 1, Color::Hue(i + ClrShift + imax / 6, imax, 0.3)); }
 
 		if (i == 0) {
 			x1 = x;
 			x2 = x;
-			y1 = y; 
+			y1 = y;
 			y2 = y;
 		}
 		else {
@@ -68,16 +85,41 @@ void Game::ComposeFrame()
 		}
 	}
 
+	for (int i = 0; i < imax; i++) {
+		int temp = i;
+		double x = initX;
+		double y = initY;
+		double dir = initDir;
+		double step = initStep;
+		int pwr2 = imax;
+		for (int digitOrder = 0; digitOrder < lvl; digitOrder++) {
+			pwr2 /= 2;
+			bool digitVal = (temp >= pwr2);
+			temp %= pwr2;
+
+			if (digitVal) { dir += dirStep1; }
+			else { dir += dirStep2; }
+			x += (step * sin(dir));
+			y += (step * cos(dir));
+
+			step *= stepCoef;
+			if (digitVal) { step *= leftStepCoef; }
+
+		}
+		if (x >= 0 && x < gfx.ScreenWidth && y >= 0 && y < gfx.ScreenHeight) { gfx.PutPixel(x, y, Color::Hue(i + ClrShift, imax)); }
+
+	}
+
 
 	dirStep1 += 0.005;
 	dirStep2 += 0.0002;
-	initDir -= (0.005*(1+sin(dirStep2*40.351)));
+	initDir -= (0.01*(1+sin(dirStep2*40.351)));
 	ClrShift += 30;
 
 	if (stepCoefUp) { stepCoef += 0.0002; }
 	else { stepCoef -= 0.0002; }
-	if (stepCoef > 0.8) { 
-		stepCoef = 0.8; 
+	if (stepCoef > 0.85) { 
+		stepCoef = 0.85; 
 		stepCoefUp = false; 
 	}
 	if (stepCoef < 0.6) { 

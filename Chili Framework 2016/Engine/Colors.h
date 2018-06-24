@@ -76,9 +76,9 @@ public:
 	static Color& Hue(double h) {
 		int x = (int(h * 6 * 255) % (6 * 255));
 
-		int r=255;
-		int g=255;
-		int b=255;
+		int r = 255;
+		int g = 255;
+		int b = 255;
 
 		if (x >= 0 * 255 && x <= 1 * 255) {
 			r = 0;
@@ -91,31 +91,79 @@ public:
 			b = 255;
 		}
 		if (x >= 2 * 255 && x <= 3 * 255) {
-			r = -2*255 + x;
+			r = -2 * 255 + x;
 			g = 0;
 			b = 255;
 		}
 		if (x >= 3 * 255 && x <= 4 * 255) {
 			r = 255;
 			g = 0;
-			b = 4*255-x;
+			b = 4 * 255 - x;
 		}
 		if (x >= 4 * 255 && x <= 5 * 255) {
 			r = 255;
-			g = -4*255+x;
+			g = -4 * 255 + x;
 			b = 0;
 		}
 		if (x >= 5 * 255 && x <= 6 * 255) {
-			r = 6*255-x;
+			r = 6 * 255 - x;
 			g = 255;
 			b = 0;
 		}
 
 		return Color(r, g, b);
 	}
-	static Color& Hue(int x, int y) {
-		return Hue(double(x)/double(y));
+	static Color& Hue(int x, int y, double shade) {
+		return Hue(double(x) / double(y), shade);
 	}
+	static Color& Hue(double h, double shade) {
+		int x = (int(h * 6 * 255) % (6 * 255));
+
+		int r = 255;
+		int g = 255;
+		int b = 255;
+
+		if (x >= 0 * 255 && x <= 1 * 255) {
+			r = 0;
+			g = 255;
+			b = x;
+		}
+		if (x >= 1 * 255 && x <= 2 * 255) {
+			r = 0;
+			g = 2 * 255 - x;
+			b = 255;
+		}
+		if (x >= 2 * 255 && x <= 3 * 255) {
+			r = -2 * 255 + x;
+			g = 0;
+			b = 255;
+		}
+		if (x >= 3 * 255 && x <= 4 * 255) {
+			r = 255;
+			g = 0;
+			b = 4 * 255 - x;
+		}
+		if (x >= 4 * 255 && x <= 5 * 255) {
+			r = 255;
+			g = -4 * 255 + x;
+			b = 0;
+		}
+		if (x >= 5 * 255 && x <= 6 * 255) {
+			r = 6 * 255 - x;
+			g = 255;
+			b = 0;
+		}
+
+		r *= shade;
+		g *= shade;
+		b *= shade;
+
+		return Color(r, g, b);
+	}
+	static Color& Hue(int x, int y) {
+		return Hue(double(x) / double(y));
+	}
+
 
 };
 
