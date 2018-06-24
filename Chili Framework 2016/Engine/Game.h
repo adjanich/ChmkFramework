@@ -28,12 +28,6 @@ private:
 
 	std::mt19937 rng;
 
-	Surface srf = Surface(L"ale.bmp");
-
-	Font fnt = Font(L"testfont.bmp");
-
-	int x = 2;
-	int y = 3;
 
 
 
