@@ -53,6 +53,7 @@ public:
 	const Surface& GetSurface();
 
 	static std::string ToSrtring(int x);
+	static std::string ToSrtring(double x, int nCif);
 
 private:
 	bool SupportedChars(const std::wstring& txt) const;

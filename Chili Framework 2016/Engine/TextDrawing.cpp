@@ -566,6 +566,42 @@ std::string  Text::ToSrtring(int x)
 	return str;
 }
 
+std::string Text::ToSrtring(double x, int nCif)
+{
+	std::string str;
+
+	bool Negative = (x < 0);
+	x = abs(x);
+
+	int cifBeforeDot = int(log10(x));
+	if (cifBeforeDot <= 0) {
+		str = "0.";
+	}
+	else {
+		str = "neco.";
+	}
+
+	double pwr10 = 1.0;
+	for (int CurCif = 1; CurCif <= nCif; CurCif++){
+		pwr10 *= 0.1;
+		int CifVal = 0;
+		while (x > pwr10) {
+			CifVal++;
+			x -= pwr10;
+		}
+		str += CifVal + '0';
+	}
+
+	if (Negative) {
+		str = '-' + str;
+	}
+
+
+
+	return str;
+
+}
+
 bool Text::SupportedChars(const std::wstring & txt) const
 {
 	return SupportedChars(std::string(txt.begin(),txt.end()));

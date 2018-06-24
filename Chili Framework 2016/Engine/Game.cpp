@@ -155,18 +155,24 @@ void Game::ComposeFrame()
 
 #ifndef NDEBUG
 	DrawRect(x1, x2, y1, y2);
-	Text t_x1 = Text(Text::ToSrtring(int(x1)), fnt);
-	srf = t_x1.GetSurface();
+	Text txt = Text("x1="+Text::ToSrtring(int(x1)), fnt);
+	srf = txt.GetSurface();
 	gfx.DrawSprite(0, 0, srf);
-	t_x1 = Text(Text::ToSrtring(int(x2)), fnt);
-	srf = t_x1.GetSurface();
+	txt = Text("x2=" + Text::ToSrtring(int(x2)), fnt);
+	srf = txt.GetSurface();
 	gfx.DrawSprite(0, 20, srf);
-	t_x1 = Text(Text::ToSrtring(int(y1)), fnt);
-	srf = t_x1.GetSurface();
+	txt = Text("y1=" + Text::ToSrtring(int(y1)), fnt);
+	srf = txt.GetSurface();
 	gfx.DrawSprite(0, 40, srf);
-	t_x1 = Text(Text::ToSrtring(int(y2)), fnt);
-	srf = t_x1.GetSurface();
+	txt = Text("y2=" + Text::ToSrtring(int(y2)), fnt);
+	srf = txt.GetSurface();
 	gfx.DrawSprite(0, 60, srf);
+	txt = Text("stepCoef=" + Text::ToSrtring(stepCoef, 3), fnt);
+	srf = txt.GetSurface();
+	gfx.DrawSprite(0, 80, srf);
+	txt = Text("leftStepCoef=" + Text::ToSrtring(leftStepCoef, 3), fnt);
+	srf = txt.GetSurface();
+	gfx.DrawSprite(0, 100, srf);
 #endif
 
 }
