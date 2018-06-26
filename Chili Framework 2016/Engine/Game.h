@@ -32,5 +32,5 @@ private:
 	HexGrid hxg;
 
 
-	
+	//Font fnt = Font(L"testfont.bmp");
 };

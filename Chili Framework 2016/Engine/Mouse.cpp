@@ -7,6 +7,11 @@ std::pair<int,int> Mouse::GetPos() const
 	return { x,y };
 }
 
+Vec2<float> Mouse::GetFloatPos() const
+{
+	return Vec2<float>(float(x), float(y));
+}
+
 int Mouse::GetPosX() const
 {
 	return x;

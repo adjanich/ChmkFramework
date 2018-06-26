@@ -9,7 +9,7 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	rng(std::random_device()()),
-	hxg(70, 5, 4, true)
+	hxg(50, 5, 7, false)
 {
 
 }
@@ -29,5 +29,5 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	hxg.Draw(gfx);
+	hxg.Draw(gfx, wnd.mouse.GetFloatPos());
 }

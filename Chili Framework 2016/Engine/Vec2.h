@@ -13,6 +13,7 @@ struct Vec2 {
 		y(rhs.y)
 	{
 	}
+
 	Vec2& operator=(const Vec2& rhs) {
 		x = rhs.x;
 		y = rhs.y;

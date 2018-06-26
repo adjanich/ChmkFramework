@@ -1,7 +1,7 @@
 #pragma once
 #include "RectI.h"
-
 #include "Graphics.h"
+
 
 class HexGrid {
 private:
@@ -10,6 +10,7 @@ private:
 		Cell();
 
 		void Draw(Graphics& gfx);
+		void DrawSpecial(Graphics& gfx);
 
 		void SetActive(bool in_Active);
 		bool IsActive() const;
@@ -22,11 +23,13 @@ private:
 	};
 
 public:
+
+public:
 	HexGrid(float a, int nRows, int nColumns, bool StartWithLonger = false, const RectI& rect = RectI(0, Graphics::ScreenWidth, 0, Graphics::ScreenHeight));
 	HexGrid(float a, int nRows, int nColumns, bool StartWithLonger, const Vec2<float>& offset);
 	~HexGrid();
 
-	void Draw(Graphics& gfx);
+	void Draw(Graphics& gfx, Vec2<float> MousePos);
 
 private:
 	float GetWidth() const;
@@ -34,9 +37,13 @@ private:
 	float GetWidth(float a, int nColumns) const;
 	float GetHeight(float a, int nRows) const;
 
-	int nCellsInRow(int Row);
+	int nCellsInRow(int Row) const;
 
-	Vec2<float> offset = Vec2<float>(0.0f, 0.0f);
+	int CelliFromVec(Vec2<float> vec) /*const*/;
+	int CelliFromRC(int Row, int Column) const;
+	int RowFromCelli(int Celli);
+	int ColumnFromCelli(int Celli);
+
 private:
 	int nRows;
 	int nColumns;
@@ -46,8 +53,7 @@ private:
 
 	Cell* Cells;
 
-
-	Vec2<float> Start = Vec2<float>(0, 0);
+	Vec2<float> offset = Vec2<float>(0.0f, 0.0f);
 
 	bool Initiated = false;
 
