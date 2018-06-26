@@ -298,6 +298,19 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+void Graphics::DrawLine(float x1, float y1, float x2, float y2, Color c)
+{
+	const float Lenght = sqrtf((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+	for (float d = 0; d <= Lenght; d += 1.0f) {
+		PutPixel(int(d*(x2 - x1) / Lenght + x1), int(d*(y2 - y1) / Lenght + y1), c);
+	}
+}
+
+void Graphics::DrawLine(Vec2<float> v1, Vec2<float> v2, Color c)
+{
+	DrawLine(v1.x, v1.y, v2.x, v2.y, c);
+}
+
 void Graphics::DrawSprite(int x, int y,const RectI& clip,const Surface& s)
 {
 	const int width = s.GetWidth();

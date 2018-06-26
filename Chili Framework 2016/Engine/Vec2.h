@@ -16,17 +16,17 @@ struct Vec2 {
 	Vec2& operator=(const Vec2& rhs) {
 		x = rhs.x;
 		y = rhs.y;
-		return this*;
+		return *this;
 	}
 
-	Vec2& operator+(const Vec2& rhs) const {
+	Vec2 operator+(const Vec2& rhs) const {
 		return Vec2(x + rhs.x, y + rhs.y);
 	}
 	Vec2& operator+=(const Vec2& rhs) {
 		return *this = *this + rhs;
 	}
 
-	Vec2& operator-(const Vec2& rhs) const {
+	Vec2 operator-(const Vec2& rhs) const {
 		return Vec2(x - rhs.x, y - rhs.y);
 	}
 	Vec2& operator-=(const Vec2& rhs)
@@ -34,7 +34,7 @@ struct Vec2 {
 		return *this = *this - rhs;
 	}
 
-	Vec2& operator*(int rhs) const
+	Vec2 operator*(int rhs) const
 	{
 		return Vec2(x*rhs, y*rhs);
 	}
@@ -42,7 +42,7 @@ struct Vec2 {
 		return *this = *this * rhs;
 	}
 
-	Vec2& operator/(int rhs) const
+	Vec2 operator/(int rhs) const
 	{
 		return Vec2(x / rhs, y / rhs);
 	}

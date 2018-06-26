@@ -8,6 +8,7 @@
 #include "Surface.h"
 #include "RectI.h"
 #include "TextDrawing.h"
+#include "HexGrid.h"
 
 
 
@@ -28,7 +29,7 @@ private:
 
 	std::mt19937 rng;
 
-
+	HexGrid hxg;
 
 
 	
