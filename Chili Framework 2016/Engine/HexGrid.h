@@ -2,6 +2,8 @@
 #include "RectI.h"
 #include "Graphics.h"
 
+#define PI 3.1415926535f
+
 
 class HexGrid {
 private:
@@ -39,10 +41,16 @@ private:
 
 	int nCellsInRow(int Row) const;
 
-	int CelliFromVec(Vec2<float> vec) /*const*/;
+	int CelliFromVec(Vec2<float> vec) const;
 	int CelliFromRC(int Row, int Column) const;
-	int RowFromCelli(int Celli);
-	int ColumnFromCelli(int Celli);
+	int RowFromCelli(int Celli) const;
+	int ColumnFromCelli(int Celli) const;
+	Vec2<float> VecCenter(int Celli) const;
+	Vec2<float> VecCenter(int Row, int Column) const;
+	Vec2<float> VecCorner(int Celli, int Corneri) const;
+	Vec2<float> VecCorner(int Row, int Column, int Corneri)const;
+	int SectorFromVec(Vec2<float> vec) const;
+	int AdjacentCelli(int Celli, int Dir);
 
 private:
 	int nRows;

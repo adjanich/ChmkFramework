@@ -83,17 +83,15 @@ HexGrid::HexGrid(float a, int nRows, int nColumns, bool StartWithLonger, const V
 		nCells += nCellsInRow(CurRow);
 	}
 
+	Initiated = true;
+
 	Cells = new Cell[nCells];
 
-	int CurCell = 0;
-	for (int CurRow = 0; CurRow < nRows; CurRow++) {
-		for (int CurColumn = 0; CurColumn < nCellsInRow(CurRow); CurColumn++) {
-			Cells[CurCell].SetLoc(offset + Vec2<float>((StartWithLonger ^ (CurRow % 2 == 0)) ? (sqrtf(3)*a*(1.0f + CurColumn)) : (sqrtf(3)*a*(0.5f + CurColumn)), (1.5f*CurRow + 1.0f)*a), a);
-			CurCell++;
-		}
+	for (int Celli = 0; Celli < nCells; Celli++) {
+			Cells[Celli].SetLoc(VecCenter(Celli), a);
 	}
 
-	Initiated = true;
+
 
 }
 
@@ -110,7 +108,7 @@ void HexGrid::Draw(Graphics & gfx, Vec2<float> MousePos)
 	int HoverCelli=CelliFromVec(MousePos);
 
 	for (int CurCell = 0; CurCell < nCells; CurCell++) {
-		if (HoverCelli == CurCell) {
+		if (AdjacentCelli(HoverCelli,SectorFromVec(MousePos)) == CurCell) {
 			Cells[CurCell].DrawSpecial(gfx);
 		}
 		else {
@@ -155,7 +153,7 @@ int HexGrid::nCellsInRow(int Row) const
 
 ////////////////////////////////////////////////////////////////////
 
-int HexGrid::CelliFromVec(Vec2<float> vec) //const
+int HexGrid::CelliFromVec(Vec2<float> vec) const
 {
 	float x = (vec - offset).x;
 	float y = (vec - offset).y;
@@ -277,11 +275,11 @@ int HexGrid::CelliFromRC(int Row, int Column) const
 	}
 }
 
-int HexGrid::RowFromCelli(int Celli)
+int HexGrid::RowFromCelli(int Celli) const
 {
 	assert(Initiated);
-//	assert(Celli >= 0);
-//	assert(Celli < nCells);
+	assert(Celli >= 0);
+	assert(Celli < nCells);
 	if (StartWithLonger) {
 		if ((Celli % (2 * nColumns - 1)) < nColumns) {
 			return 2 * (Celli / (2 * nColumns - 1));
@@ -300,11 +298,11 @@ int HexGrid::RowFromCelli(int Celli)
 	}
 }
 
-int HexGrid::ColumnFromCelli(int Celli)
+int HexGrid::ColumnFromCelli(int Celli) const
 {
 	assert(Initiated);
-//	assert(Celli >= 0);
-//	assert(Celli < nCells);
+	assert(Celli >= 0);
+	assert(Celli < nCells);
 	if (StartWithLonger) {
 		if ((Celli % (2 * nColumns - 1)) < nColumns) {
 			return (Celli % (2 * nColumns - 1));
@@ -321,5 +319,132 @@ int HexGrid::ColumnFromCelli(int Celli)
 			return (Celli % (2 * nColumns - 1)) - (nColumns - 1);
 		}
 	}
+}
+
+Vec2<float> HexGrid::VecCenter(int Celli) const
+{
+	return VecCenter(RowFromCelli(Celli), ColumnFromCelli(Celli));
+}
+
+Vec2<float> HexGrid::VecCenter(int Row, int Column) const
+{
+	return offset + Vec2<float>((StartWithLonger ^ (Row % 2 == 0)) ? (sqrtf(3)*a*(1.0f + Column)) : (sqrtf(3)*a*(0.5f + Column)), (1.5f*Row + 1.0f)*a);
+}
+
+Vec2<float> HexGrid::VecCorner(int Celli, int Corneri) const
+{
+	assert(Corneri >= 0);
+	assert(Corneri < 6);
+	switch (Corneri) {
+	case 0:
+		return VecCenter(Celli) + Vec2<float>(0, -a);
+	case 1:
+		return VecCenter(Celli) + Vec2<float>(0.5f*sqrtf(3)*a, -0.5f*a);
+	case 2:
+		return VecCenter(Celli) + Vec2<float>(0.5f*sqrtf(3)*a, 0.5f*a);
+	case 3:
+		return VecCenter(Celli) + Vec2<float>(0, a);
+	case 4:
+		return VecCenter(Celli) + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a);
+	case 5:
+		return VecCenter(Celli) + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a);
+	default:
+		assert(false);
+		return Vec2<float>(0.0f, 0.0f);
+	}
+}
+
+Vec2<float> HexGrid::VecCorner(int Row, int Column, int Corneri) const
+{
+	assert(Corneri >= 0);
+	assert(Corneri < 6);
+	switch (Corneri) {
+	case 0:
+		return VecCenter(Row, Column) + Vec2<float>(0, -a);
+	case 1:
+		return VecCenter(Row, Column) + Vec2<float>(0.5f*sqrtf(3)*a, -0.5f*a);
+	case 2:
+		return VecCenter(Row, Column) + Vec2<float>(0.5f*sqrtf(3)*a, 0.5f*a);
+	case 3:
+		return VecCenter(Row, Column) + Vec2<float>(0, a);
+	case 4:
+		return VecCenter(Row, Column) + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a);
+	case 5:
+		return VecCenter(Row, Column) + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a);
+	default:
+		assert(false);
+		return Vec2<float>(0.0f, 0.0f);
+	}
+}
+
+int HexGrid::SectorFromVec(Vec2<float> vec) const
+{
+	if (CelliFromVec(vec) == -1) { 
+		return -1; 
+	}
+	const Vec2<float> shift = VecCenter(CelliFromVec(vec)) - vec;
+	return int(3.0f*(atan2f(shift.y, shift.x)) / PI + 10.5f) % 6;
+}
+
+int HexGrid::AdjacentCelli(int Celli, int Dir)
+{
+	
+	assert(Initiated);
+
+	if (Dir == -1) { return -1; }
+
+	assert(Dir >= 0);
+	assert(Dir < 6);
+
+	if (Celli == -1) { return -1; }
+
+	assert(Celli >= 0);
+	assert(Celli < nCells);
+
+
+	int Row = RowFromCelli(Celli);
+	int Column = ColumnFromCelli(Celli);
+
+	switch (Dir) {
+	case 0:
+		if (StartWithLonger ^ (Row % 2 == 0)) {
+			Column++;
+		}
+		Row--;
+		break;
+	case 1:
+		Column++;
+		break;
+	case 2:
+		if (StartWithLonger ^ (Row % 2 == 0)) {
+			Column++;
+		}
+		Row++;
+		break;
+	case 3:
+		if (StartWithLonger ^ (Row % 2 == 1)) {
+			Column--;
+		}
+		Row++;
+		break;
+	case 4:
+		Column--;
+		break;
+	case 5:
+		if (StartWithLonger ^ (Row % 2 == 1)) {
+			Column--;
+		}
+		Row--;
+		break;
+	default:
+		assert(false);
+	}
+
+	if (Row < 0) { return -1; }
+	if (Row >= nRows) { return -1; }
+	if (Column < 0) { return -1; }
+	if (Column >= nCellsInRow(Row)) { return -1; }
+
+	return CelliFromRC(Row, Column);
 }
 

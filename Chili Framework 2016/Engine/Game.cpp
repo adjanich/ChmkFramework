@@ -9,9 +9,8 @@ Game::Game(MainWindow& wnd)
 	wnd(wnd),
 	gfx(wnd),
 	rng(std::random_device()()),
-	hxg(50, 5, 7, false)
+	hxg(50, 5, 7, true)
 {
-
 }
 
 void Game::Go()
