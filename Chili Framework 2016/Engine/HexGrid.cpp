@@ -19,15 +19,63 @@ void HexGrid::Cell::Draw(Graphics & gfx)
 	gfx.DrawLine(loc + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a), loc + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a));
 
 }
-void HexGrid::Cell::DrawSpecial(Graphics & gfx)
+void HexGrid::Cell::DrawHover(Graphics & gfx)
+{
+
+	assert(Initiated);
+
+	const Color c = Color(100, 100, 100);
+	
+	for (float i = 0.0f; i < 1.7f; i += 0.5f) {
+		gfx.DrawLine(loc + Vec2<float>(0, -a + i * 1.5f), loc + Vec2<float>(0.5f*sqrtf(3)*a - i, -0.5f*a + i), c);
+		gfx.DrawLine(loc + Vec2<float>(0, -a + i * 1.5f), loc + Vec2<float>(-0.5f*sqrtf(3)*a + i, -0.5f*a + i), c);
+		gfx.DrawLine(loc + Vec2<float>(0, a - i * 1.5f), loc + Vec2<float>(0.5f*sqrtf(3)*a - i, 0.5f*a - i), c);
+		gfx.DrawLine(loc + Vec2<float>(0, a - i * 1.5f), loc + Vec2<float>(-0.5f*sqrtf(3)*a + i, 0.5f*a - i), c);
+		gfx.DrawLine(loc + Vec2<float>(0.5f*sqrtf(3)*a - i, 0.5f*a - i), loc + Vec2<float>(0.5f*sqrtf(3)*a - i, -0.5f*a + i), c);
+		gfx.DrawLine(loc + Vec2<float>(-0.5f*sqrtf(3)*a + i, 0.5f*a - i), loc + Vec2<float>(-0.5f*sqrtf(3)*a + i, -0.5f*a + i), c);
+	}
+	Draw(gfx);
+}
+void HexGrid::Cell::DrawSideHover(Graphics & gfx, int side)
 {
 	assert(Initiated);
-	gfx.DrawLine(loc + Vec2<float>(0, a), loc + Vec2<float>(0.5f*sqrtf(3)*a, -0.5f*a));
-	gfx.DrawLine(loc + Vec2<float>(0, a), loc + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a));
-	gfx.DrawLine(loc + Vec2<float>(0, -a), loc + Vec2<float>(0.5f*sqrtf(3)*a, 0.5f*a));
-	gfx.DrawLine(loc + Vec2<float>(0, -a), loc + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a));
-	gfx.DrawLine(loc + Vec2<float>(0.5f*sqrtf(3)*a, 0.5f*a), loc + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a));
-	gfx.DrawLine(loc + Vec2<float>(0.5f*sqrtf(3)*a, -0.5f*a), loc + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a));
+	if (side == -1) { return; }
+	assert(side >= 0);
+	assert(side < 6);
+
+	const Color c = Color(100, 255, 100);
+	const Vec2<float> shifts[4] = {
+		Vec2<float>(0.0f,1.0f),
+		Vec2<float>(0.0f,-1.0f),
+		Vec2<float>(1.0f,0.0f),
+		Vec2<float>(-1.0f,0.0f)
+	};
+
+	for (int i = 0; i < 4; i++) {
+		switch (side) {
+		case 0:
+			gfx.DrawLine(loc + shifts[i] + Vec2<float>(0, -a), loc + shifts[i] + Vec2<float>(0.5f*sqrtf(3)*a, -0.5f*a), c);
+			break;
+		case 1:
+			gfx.DrawLine(loc + shifts[i] + Vec2<float>(0.5f*sqrtf(3)*a, 0.5f*a), loc + shifts[i] + Vec2<float>(0.5f*sqrtf(3)*a, -0.5f*a), c);
+			break;
+		case 2:
+			gfx.DrawLine(loc + shifts[i] + Vec2<float>(0, a), loc + shifts[i] + Vec2<float>(0.5f*sqrtf(3)*a, 0.5f*a), c);
+			break;
+		case 3:
+			gfx.DrawLine(loc + shifts[i] + Vec2<float>(0, a), loc + shifts[i] + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a), c);
+			break;
+		case 4:
+			gfx.DrawLine(loc + shifts[i] + Vec2<float>(-0.5f*sqrtf(3)*a, 0.5f*a), loc + shifts[i] + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a), c);
+			break;
+		case 5:
+			gfx.DrawLine(loc + shifts[i] + Vec2<float>(0, -a), loc + shifts[i] + Vec2<float>(-0.5f*sqrtf(3)*a, -0.5f*a), c);
+			break;
+
+		default:
+			assert(false);
+		}
+	}
 
 }
 
@@ -107,14 +155,16 @@ void HexGrid::Draw(Graphics & gfx, Vec2<float> MousePos)
 {
 	int HoverCelli=CelliFromVec(MousePos);
 
-	for (int CurCell = 0; CurCell < nCells; CurCell++) {
-		if (AdjacentCelli(HoverCelli,SectorFromVec(MousePos)) == CurCell) {
-			Cells[CurCell].DrawSpecial(gfx);
-		}
-		else {
-			Cells[CurCell].Draw(gfx);
-		}
+
+	if (HoverCelli != -1) {
+//		Cells[HoverCelli].DrawHover(gfx);
+		Cells[HoverCelli].DrawSideHover(gfx, SectorFromVec(MousePos));
 	}
+
+	for (int CurCell = 0; CurCell < nCells; CurCell++) {
+		Cells[CurCell].Draw(gfx);
+	}
+
 }
 
 float HexGrid::GetWidth() const

@@ -12,7 +12,8 @@ private:
 		Cell();
 
 		void Draw(Graphics& gfx);
-		void DrawSpecial(Graphics& gfx);
+		void DrawHover(Graphics& gfx);
+		void DrawSideHover(Graphics& gfx, int side);
 
 		void SetActive(bool in_Active);
 		bool IsActive() const;
