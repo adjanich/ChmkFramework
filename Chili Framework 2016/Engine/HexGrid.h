@@ -11,18 +11,34 @@ private:
 	public:
 		Cell();
 
-		void Draw(Graphics& gfx);
-		void DrawHover(Graphics& gfx);
-		void DrawSideHover(Graphics& gfx, int side);
+		void DrawBorder(Graphics& gfx, Color Trench);
+		void DrawBackground(Graphics& gfx, Color Out, Color Tranch);
+		void DrawHover(Graphics& gfx, Color Trench);
+		void DrawSideHover(Graphics& gfx, int side, Color Out, Color Trench);
+
+		void SwitchConnection(int Side);
+		void Rot();
 
 		void SetActive(bool in_Active);
 		bool IsActive() const;
-		void SetLoc(const Vec2<float>& in_loc, float in_a);
+		void Initiate(const Vec2<float>& in_loc, float in_a, Color* in_Pixels, int in_PxPerCell);
+	private:
+		void DrawInteruptedLine(Graphics& gfx, Vec2<float> v1, Vec2<float> v2,Color Trench, Color BorderColor = Color(255, 255, 255));
+
+
+
+	public:
+		static constexpr float SideFraction = 0.3f; // part of side from both of the corners, which is solid and not covered with path;
 	private:
 		bool Active = true;
 		bool Initiated = false;
 		Vec2<float> loc = Vec2<float>(0.0f, 0.0f); // loc of center
 		float a;
+
+		bool HasConnection[6] = {false, true, true, false, true, true};
+
+		Color* Pixels;
+		int PxPerCell;
 	};
 
 public:
@@ -32,7 +48,14 @@ public:
 	HexGrid(float a, int nRows, int nColumns, bool StartWithLonger, const Vec2<float>& offset);
 	~HexGrid();
 
+	void AddOrRemoveConnection(Vec2<float> MousePos);
+	void Rot(Vec2<float> MousePos);
+
 	void Draw(Graphics& gfx, Vec2<float> MousePos);
+	void DrawHover(Graphics& gfx, Vec2<float> MousePos);
+	void DrawSideHover(Graphics& gfx, Vec2<float> MousePos);
+
+	
 
 private:
 	float GetWidth() const;
@@ -53,6 +76,10 @@ private:
 	int SectorFromVec(Vec2<float> vec) const;
 	int AdjacentCelli(int Celli, int Dir);
 
+	void InitiatePixels(Color Out, Color Trench);
+	float InTrench(float i, float j, int nConnections, int* From, int* To) const;
+	Color TrenchColorGradient(Color Out, Color Trench, float f) const;
+
 private:
 	int nRows;
 	int nColumns;
@@ -61,6 +88,9 @@ private:
 	int nCells;
 
 	Cell* Cells;
+
+	Color* Pixels;
+	int PxPerCell;
 
 	Vec2<float> offset = Vec2<float>(0.0f, 0.0f);
 

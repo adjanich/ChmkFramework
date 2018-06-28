@@ -31,6 +31,12 @@ private:
 
 	HexGrid hxg;
 
+	bool M = false;
+	bool pM = false;
+	bool Space = false;
+	bool pSpace = false;
+
+	int State = 0;
 
 	//Font fnt = Font(L"testfont.bmp");
 };
